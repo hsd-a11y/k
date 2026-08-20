@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f1eb">
+  <title>for kate d.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f7f1eb; --paper:#fffdf9; --ink:#24211f; --muted:#817a73;
+      --accent:#b66b72; --accent2:#e8b7b5; --line:#ded5cc;
+      --shadow:0 24px 70px rgba(57,42,34,.12);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"DM Sans",sans-serif}
+    body{overflow-x:hidden}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    .app{min-height:100vh;position:relative}
+    header{
+      position:fixed;top:0;left:0;right:0;z-index:20;height:76px;
+      display:flex;align-items:center;justify-content:flex-end;padding:0 28px;
+      pointer-events:none;
+    }
+    .brand{pointer-events:auto;display:flex;align-items:center;gap:10px;font-size:14px;letter-spacing:.08em;text-transform:lowercase}
+    .heart{width:28px;height:28px;border:1px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-size:14px;transition:.35s}
+    .brand:hover .heart{background:var(--ink);color:var(--paper);transform:rotate(-10deg) scale(1.06)}
+    main{min-height:100vh}
+    .screen{
+      min-height:100vh;padding:112px 7vw 60px;display:none;align-items:center;justify-content:center;
+      animation:enter .65s cubic-bezier(.2,.8,.2,1)
+    }
+    .screen.active{display:flex}
+    @keyframes enter{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+    .hero{max-width:760px;text-align:center}
+    .eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:24px}
+    h1,h2{font-family:"Playfair Display",serif;font-weight:500;line-height:1.06;margin:0}
+    h1{font-size:clamp(46px,7vw,86px);letter-spacing:-.04em}
+    h2{font-size:clamp(38px,5vw,62px);letter-spacing:-.035em}
+    .lead{font-size:clamp(17px,2vw,21px);line-height:1.65;color:#514a45;max-width:650px;margin:28px auto 36px}
+    .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .btn{
+      border:1px solid var(--ink);background:transparent;color:var(--ink);padding:14px 26px;border-radius:999px;
+      transition:transform .25s,background .25s,color .25s,box-shadow .25s
+    }
+    .btn:hover{transform:translateY(-3px);box-shadow:0 12px 25px rgba(0,0,0,.08)}
+    .btn.primary{background:var(--ink);color:var(--paper)}
+    .btn.primary:hover{background:var(--accent);border-color:var(--accent)}
+    .tiny{font-size:12px;color:var(--muted);margin-top:18px}
+    .choice-wrap{width:min(1120px,100%)}
+    .topline{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;gap:20px}
+    .counter{font-size:12px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+    .place-layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(330px,.95fr);gap:52px;align-items:center}
+    .gallery{position:relative;height:min(58vh,560px);min-height:390px}
+    .photo{
+      position:absolute;inset:0;border-radius:26px;overflow:hidden;background:#eee4db;
+      box-shadow:var(--shadow);transition:transform .55s cubic-bezier(.2,.8,.2,1),opacity .45s;
+    }
+    .photo img{width:100%;height:100%;object-fit:cover;display:block}
+    .photo:nth-child(2){transform:translate(22px,18px) scale(.965);z-index:1;opacity:.72}
+    .photo:nth-child(3){transform:translate(42px,34px) scale(.93);z-index:0;opacity:.48}
+    .photo.current{z-index:3;transform:none;opacity:1}
+    .gallery-controls{position:absolute;bottom:18px;right:18px;z-index:5;display:flex;gap:8px}
+    .circle{
+      width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,253,249,.9);backdrop-filter:blur(8px);
+      display:grid;place-items:center;font-size:18px;transition:.25s
+    }
+    .circle:hover{transform:scale(1.08);background:#fff}
+    .copy h2{margin-bottom:14px}
+    .desc{font-size:16px;line-height:1.7;color:#5d554e;max-width:500px}
+    .venue-switch{display:flex;gap:8px;margin:22px 0 14px}
+    .chip{border:1px solid var(--line);background:var(--paper);padding:9px 13px;border-radius:999px;color:var(--muted);transition:.25s}
+    .chip.active{border-color:var(--ink);color:var(--ink);background:#fff}
+    .films{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+    .film{font-size:13px;border:1px solid var(--line);padding:9px 11px;border-radius:12px;background:rgba(255,255,255,.55)}
+    .interest{margin:26px 0 24px;padding:18px 18px 15px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.4)}
+    .interest-head{display:flex;justify-content:space-between;gap:12px;font-size:13px;margin-bottom:12px}
+    .interest-value{font-weight:600}
+    input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}
+    .range-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:8px}
+    .navrow{display:flex;justify-content:space-between;align-items:center;margin-top:26px;gap:12px}
+    .navrow .btn{padding:12px 19px}
+    .progress{height:3px;background:#e5ddd5;border-radius:9px;margin-bottom:34px;overflow:hidden}
+    .progress span{display:block;height:100%;background:var(--accent);transition:width .5s}
+    .gift-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:38px 0 12px}
+    .gift{
+      text-align:center;border:1px solid var(--line);background:rgba(255,255,255,.52);border-radius:20px;padding:16px;
+      transition:.3s;position:relative
+    }
+    .gift:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+    .gift.selected{border-color:var(--accent);box-shadow:0 0 0 2px rgba(182,107,114,.12)}
+    .gift-art{height:150px;border-radius:14px;display:grid;place-items:center;background:#eee4db;margin-bottom:14px}
+    .gift-art svg{width:62px;height:62px;fill:none;stroke:var(--ink);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+    .gift h3{font-size:15px;margin:0}
+    .gift p{display:none}
+    .check{position:absolute;top:12px;right:12px;width:25px;height:25px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;background:var(--paper);font-size:12px}
+    .gift.selected .check{background:var(--accent);color:white;border-color:var(--accent)}
+    .gift-none{grid-column:1/-1;justify-self:center;min-width:260px;margin-top:0;padding:11px 20px}
+    .datebox{width:min(760px,100%);text-align:center}
+    .calendar{margin:30px auto 18px;background:rgba(255,255,255,.48);border:1px solid var(--line);border-radius:24px;padding:18px}
+    .monthline{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+    .monthline strong{font-family:"Playfair Display";font-size:22px;font-weight:500}
+    .days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+    .day{border:0;background:transparent;border-radius:12px;padding:12px 4px;color:var(--ink);transition:.2s}
+    .day:hover{background:#eee5dd}
+    .day.muted{color:#bdb4ad}
+    .day.selected{background:var(--ink);color:#fff}
+    .weekday{font-size:10px;color:var(--muted);padding:5px}
+    .times{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:18px 0 28px}
+    .time{border:1px solid var(--line);background:rgba(255,255,255,.55);padding:10px 14px;border-radius:999px;transition:.2s}
+    .time.selected{background:var(--ink);color:#fff;border-color:var(--ink)}
+    .final{position:fixed;inset:0;background:var(--ink);color:#fff;display:none;align-items:center;justify-content:center;text-align:center;z-index:100;overflow:hidden}
+    .final.show{display:flex;animation:fadeIn .5s}
+    .final h2{font-size:clamp(60px,10vw,150px);position:relative;z-index:2}
+    .final .heart-rain{position:absolute;inset:0;opacity:.16}
+    .heart-rain span{position:absolute;font-size:clamp(18px,4vw,50px);animation:float 8s linear infinite}
+    @keyframes float{from{transform:translateY(110vh) rotate(0)}to{transform:translateY(-20vh) rotate(360deg)}}
+    .cry{position:fixed;inset:0;background:#fff;color:#111;display:none;align-items:center;justify-content:center;z-index:90;padding:20px}
+    .cry img{max-width:min(90vw,420px);max-height:min(80vh,420px);width:auto;height:auto;object-fit:contain}
+    .cry.show{display:flex;animation:cryIn .35s}
+    @keyframes cryIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @media(max-width:850px){
+      header{height:64px;padding:0 18px}.screen{padding:92px 20px 36px}
+      .place-layout{grid-template-columns:1fr;gap:30px}.gallery{height:52vh;min-height:320px;max-height:500px}
+      .gift-grid{grid-template-columns:repeat(2,1fr)}.gift-none{grid-column:1/-1}.gift-art{height:120px}
+      .topline{margin-bottom:18px}.navrow{margin-top:18px}
+    }
+    @media(max-width:520px){
+      .gift-grid{gap:9px}.gift{padding:10px}.gift-art{height:100px;font-size:42px}
+      .days{gap:2px}.day{padding:10px 2px}.gallery{min-height:280px}
+      .desc{font-size:15px}.lead{font-size:16px}
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header><div class="brand"><span class="heart">♥</span><span>for kate d.</span></div></header>
+  <main id="main"></main>
+  <div id="cry" class="cry"><img src="photos/cry.png" alt="слёзы"></div>
+  <div id="final" class="final">
+    <div class="heart-rain" id="heartRain"></div>
+    <h2>до скорой встречи</h2>
+  </div>
+</div>
+<script>
+const places = [
+  {
+    title:"Нишевый кинотетатр Out Cinema",
+    desc:"Не знаю была ли ты там, но его афиша и атмосфера может тебе понравиться.",
+    images:[
+      {local:"photos/img1.webp", fallback:"https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=85"},
+      {local:"photos/img2.webp", fallback:"https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=1200&q=85"},
+      {local:"photos/img3.webp", fallback:"https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1200&q=85"}
+    ]
+  },
+  {
+    title:"Монрепо, как в старом романе",
+    desc:"Скалы, вода, сосны и романтический парк. Можно гулять без спешки и искать красивые места.",
+    images:[
+      {local:"photos/img4.jpg", fallback:"https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=85"},
+      {local:"photos/img5.jpg", fallback:"https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=1200&q=85"},
+      {local:"photos/img6.jpg", fallback:"https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1200&q=85"}
+    ]
+  },
+  {
+    title:"Музей йоги Sanskar",
+    desc:"Аудиовизуальное путешествие через века: свет, звук, артефакты и немного другой мир.",
+    images:[
+      {local:"photos/img7.jpg", fallback:"https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=85"},
+      {local:"photos/img8.jpg", fallback:"https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=1200&q=85"},
+      {local:"photos/img9.jpg", fallback:"https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1200&q=85"}
+    ]
+  },
+  {
+    title:"Флорентийская мозаика",
+    desc:"Тихие залы, ювелирная работа по камню и ощущение маленького художественного открытия.",
+    images:[
+      {local:"photos/img10.jpg", fallback:"https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=85"},
+      {local:"photos/img11.jpg", fallback:"https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=1200&q=85"},
+      {local:"photos/img12.jpg", fallback:"https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1200&q=85"}
+    ]
+  },
+  {
+    title:"Комарово и Финский залив",
+    desc:"Море, сосны и прогулка, где можно просто идти рядом и никуда не торопиться. Приложил сюда свои фотки.",
+    images:[
+      {local:"photos/img13.jpg", fallback:"https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=85"},
+      {local:"photos/img14.jpg", fallback:"https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=1200&q=85"},
+      {local:"photos/img15.jpg", fallback:"https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1200&q=85"}
+    ]
+  },
+  {
+    title:"Выставка «История всего: от Сотворения до Апокалипсиса»",
+    desc:"Экспозиция всего пути человечества: от момента создания Вселенной до надежды на финальное обновление мира.",
+    images:[
+      {local:"photos/img19.jpg", fallback:"https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=85"},
+      {local:"photos/img20.jpg", fallback:"https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=1200&q=85"},
+      {local:"photos/img21.jpg", fallback:"https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1200&q=85"}
+    ]
+  },
+  {
+    title:"Futurione Emotions",
+    desc:"Иммерсивное арт-пространство: свет, звук, цифровые инсталляции и много эмоций.",
+    images:[
+      {local:"photos/img16.jpg", fallback:"https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=85"},
+      {local:"photos/img17.jpg", fallback:"https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=1200&q=85"},
+      {local:"photos/img18.jpg", fallback:"https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1200&q=85"}
+    ]
+  }
+];
+
+const gifts=[
+  {title:"Зажечь",icon:`<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 56c-10 0-17-7-17-16 0-8 6-13 12-20 4-5 5-10 5-14 8 7 14 16 14 26 0 14-7 24-14 24Z"/><path d="M32 48c-5 0-8-4-8-8 0-4 3-7 6-11 2-3 2-5 2-7 4 4 7 9 7 14 0 7-3 12-7 12Z"/></svg>`},
+  {title:"Расписать",icon:`<svg viewBox="0 0 64 64" aria-hidden="true"><path d="m43 10 11 11"/><path d="m40 13 11 11-25 25-14 3 3-14 25-25Z"/><path d="m12 52 8-2"/><path d="m24 36 11 11"/></svg>`},
+  {title:"Собрать",icon:`<svg viewBox="0 0 64 64" aria-hidden="true"><path d="m32 8 22 13v22L32 56 10 43V21L32 8Z"/><path d="M10 21l22 13 22-13"/><path d="M32 34v22"/><path d="m22 14 22 13"/><path d="m42 14-20 12"/></svg>`},
+  {title:"Вырастить",icon:`<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 54V30"/><path d="M32 35c-12 0-18-7-18-17 10 0 18 5 18 17Z"/><path d="M32 29c0-11 7-18 18-18 0 11-6 18-18 18Z"/><path d="M20 54h24"/><path d="M24 54c-3-4-4-8-4-13"/><path d="M40 54c3-4 4-8 4-13"/></svg>`}
+];
+
+let screenIndex=-1, galleryIndex=0, selectedGift=null, selectedDate=null, selectedTime=null, calendarCursor=new Date(new Date().getFullYear(),new Date().getMonth(),1);
+const ratings = Array(places.length).fill(50);
+const imageCache = new Map();
+
+function preloadImage(src){
+  if(!src || imageCache.has(src)) return imageCache.get(src);
+  const img = new Image();
+  const promise = new Promise((resolve)=>{
+    img.onload = img.onerror = ()=>resolve(img);
+    img.src = src;
+  });
+  imageCache.set(src, promise);
+  return promise;
+}
+
+function preloadPlace(index){
+  if(index < 0 || index >= places.length) return;
+  places[index].images.forEach(img=>{
+    preloadImage(img.local);
+    if(img.fallback) preloadImage(img.fallback);
+  });
+}
+
+function preloadAll(){
+  preloadImage("photos/cry.png");
+  places.forEach((_,i)=>preloadPlace(i));
+}
+
+function esc(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
+function show(html){
+  document.getElementById("main").innerHTML=html;
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function home(){
+  screenIndex=-1;
+  show(`<section class="screen active"><div class="hero">
+    <div class="eyebrow">маленькое приглашение</div>
+    <h1>Кать, пока что мы плохо знакомы.</h1>
+    <p class="lead">Но я постарался подобрать места, которые могут тебе понравиться для следующего свидания.<br>Посмотришь?</p>
+    <div class="actions"><button class="btn primary" onclick="start()">Да, показывай</button><button class="btn" onclick="nope()">Нет</button></div>
+    <div class="tiny">листай спокойно. здесь нет неправильных ответов :)</div>
+  </div></section>`);
+  // начинаем предзагрузку сразу на главном экране
+  preloadAll();
+}
+function start(){screenIndex=0;preloadPlace(0);preloadPlace(1);renderPlace()}
+function ratingText(v){
+  if(v<20)return "просто ужас";
+  if(v<40)return "скорее нет";
+  if(v<60)return "ну, можно";
+  if(v<80)return "хочу туда";
+  return "ОЧЕНЬ хочу туда";
+}
+function renderPlace(){
+  const p=places[screenIndex], n=screenIndex+1;
+  galleryIndex=0;
+  // подгружаем текущее + следующие 2 места заранее
+  preloadPlace(screenIndex);
+  preloadPlace(screenIndex+1);
+  preloadPlace(screenIndex+2);
+  const photos=p.images.map((img,i)=>{
+    const fallback = img.fallback ? ` onerror="this.onerror=null;this.src='${img.fallback}'"` : "";
+    return `<div class="photo ${i===0?"current":""}" data-i="${i}"><img src="${img.local}" alt="" decoding="async"${fallback}></div>`;
+  }).join("");
+  show(`<section class="screen active"><div class="choice-wrap">
+    <div class="progress"><span style="width:${n/places.length*100}%"></span></div>
+    <div class="topline"><div class="counter">идея ${n} / ${places.length}</div><div class="counter">${n<places.length?"ещё варианты впереди":"последняя идея"}</div></div>
+    <div class="place-layout">
+      <div class="gallery">${photos}<div class="gallery-controls"><button class="circle" onclick="gallery(-1)">←</button><button class="circle" onclick="gallery(1)">→</button></div></div>
+      <div class="copy">
+        <div class="eyebrow">куда пойдём?</div><h2>${esc(p.title)}</h2><p class="desc">${esc(p.desc)}</p>
+        <div class="interest">
+          <div class="interest-head"><span>Насколько интересно?</span><span class="interest-value" id="interestValue">${ratingText(ratings[screenIndex])}</span></div>
+          <input type="range" min="0" max="100" value="${ratings[screenIndex]}" oninput="setRating(this.value)">
+          <div class="range-labels"><span>просто ужас</span><span>хочу туда</span></div>
+        </div>
+        <div class="navrow">
+          <button class="btn" onclick="prevPlace()" ${n===1?"style='visibility:hidden'":""}>← назад</button>
+          <button class="btn primary" onclick="nextPlace()">${n===places.length?"закончить выбор":"дальше →"}</button>
+        </div>
+      </div>
+    </div>
+  </div></section>`);
+}
+function setRating(v){ratings[screenIndex]=+v;document.getElementById("interestValue").textContent=ratingText(+v)}
+function gallery(dir){
+  const p=places[screenIndex];
+  galleryIndex=(galleryIndex+dir+p.images.length)%p.images.length;
+  const nodes=[...document.querySelectorAll(".photo")];
+  nodes.forEach((el,i)=>{
+    el.classList.toggle("current",i===galleryIndex);
+    const offset=(i-galleryIndex+p.images.length)%p.images.length;
+    if(i===galleryIndex){el.style.transform="none";el.style.opacity="1";el.style.zIndex="3"}
+    else if(offset===1){el.style.transform="translate(22px,18px) scale(.965)";el.style.opacity=".72";el.style.zIndex="1"}
+    else{el.style.transform="translate(42px,34px) scale(.93)";el.style.opacity=".48";el.style.zIndex="0"}
+  });
+}
+function prevPlace(){if(screenIndex>0){screenIndex--;renderPlace()}}
+function nextPlace(){
+  if(screenIndex<places.length-1){
+    screenIndex++;
+    preloadPlace(screenIndex+1);
+    preloadPlace(screenIndex+2);
+    renderPlace();
+  }else{renderGift()}
+}
+function renderGift(){
+  show(`<section class="screen active"><div class="choice-wrap" style="text-align:center">
+    <div class="eyebrow">приятный бонус</div><h2>И ещё один маленький выбор</h2>
+    <p class="lead" style="margin-bottom:0">Что бы ты хотела с ним сделать</p>
+    <div class="gift-grid">${gifts.map((g,i)=>`<button class="gift ${selectedGift===i?"selected":""}" onclick="chooseGift(${i})"><span class="check">${selectedGift===i?"✓":""}</span><div class="gift-art">${g.icon}</div><h3>${esc(g.title)}</h3></button>`).join("")}
+      <button class="gift gift-none ${selectedGift===4?"selected":""}" onclick="chooseGift(4)"><span class="check">${selectedGift===4?"✓":""}</span><h3>Ничего из этого🫩</h3></button>
+    </div>
+    <button class="btn primary" onclick="toDate()" ${selectedGift===null?"disabled":""}>выбрала →</button>
+  </div></section>`);
+}
+function chooseGift(i){selectedGift=i;renderGift()}
+function toDate(){
+  if(selectedGift===null)return;
+  renderDate();
+}
+function formatMonth(d){return d.toLocaleDateString("ru-RU",{month:"long",year:"numeric"}).replace(" г.","")}
+function shiftMonth(delta){
+  calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+delta,1);
+  renderDate();
+}
+function renderDate(){
+  const base=calendarCursor;
+  let startDay=new Date(base.getFullYear(),base.getMonth(),1).getDay(); startDay=(startDay+6)%7;
+  const total=new Date(base.getFullYear(),base.getMonth()+1,0).getDate();
+  let cells="";
+  ["пн","вт","ср","чт","пт","сб","вс"].forEach(x=>cells+=`<div class="weekday">${x}</div>`);
+  for(let i=0;i<startDay;i++)cells+=`<div></div>`;
+  for(let d=1;d<=total;d++){
+    const key=`${base.getFullYear()}-${String(base.getMonth()+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const selected=selectedDate===key;
+    cells+=`<button class="day ${selected?"selected":""}" onclick="pickDate('${key}')">${d}</button>`;
+  }
+  const times=["15:00","16:00","17:00","18:00","19:00","20:00","20:30","21:00"];
+  show(`<section class="screen active"><div class="datebox">
+    <div class="eyebrow">последний штрих</div><h2>Когда тебе удобно?</h2>
+    <p class="lead">Выбери любой месяц, дату и удобное время.</p>
+    <div class="calendar">
+      <div class="monthline">
+        <button class="circle" onclick="shiftMonth(-1)" aria-label="предыдущий месяц">←</button>
+        <strong>${formatMonth(base)}</strong>
+        <button class="circle" onclick="shiftMonth(1)" aria-label="следующий месяц">→</button>
+      </div>
+      <div class="days">${cells}</div>
+    </div>
+    <div class="times">${times.map(t=>`<button class="time ${selectedTime===t?"selected":""}" onclick="pickTime('${t}')">${t}</button>`).join("")}</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:-12px 0 28px;flex-wrap:wrap">
+      <span class="counter">или любое своё время</span>
+      <input type="time" class="time" value="${selectedTime||""}" onchange="pickTime(this.value)" aria-label="выбрать время">
+    </div>
+    <button class="btn primary" onclick="finish()" ${(!selectedDate||!selectedTime)?"disabled":""}>я готова </button>
+  </div></section>`);
+}
+function pickDate(d){selectedDate=d;renderDate()}
+function pickTime(t){selectedTime=t;renderDate()}
+function finish(){
+  if(!selectedDate||!selectedTime)return;
+  const final=document.getElementById("final"); final.classList.add("show");
+  const rain=document.getElementById("heartRain");
+  rain.innerHTML=Array.from({length:26},(_,i)=>`<span style="left:${Math.random()*100}%;animation-delay:${Math.random()*7}s">♥</span>`).join("");
+}
+function nope(){document.getElementById("cry").classList.add("show")}
+home();
+</script>
+</body>
+</html>
